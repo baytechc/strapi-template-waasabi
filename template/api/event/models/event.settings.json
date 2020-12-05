@@ -33,7 +33,7 @@
     "schedule": {
       "type": "component",
       "repeatable": true,
-      "component": "event.schedule"
+      "component": "event.session"
     }
   }
 }

@@ -1,5 +1,5 @@
 # Waasabi Strapi Template
 
 ```sh
-npx create-strapi-app my-project --template baytechc/strapi-template-waasabi
+npx create-strapi-app my-waasabi --template baytechc/strapi-template-waasabi
 ```
