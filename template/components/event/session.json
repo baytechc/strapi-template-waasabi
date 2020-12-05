@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_event_sessions",
+  "info": {
+    "name": "session",
+    "icon": "clock",
+    "description": "A session with contributor (presenter, panelist, etc.) and scheduling information, as it appears in an event."
+  },
+  "options": {},
+  "attributes": {
+    "session": {
+      "model": "session"
+    },
+    "start": {
+      "type": "datetime"
+    },
+    "duration": {
+      "type": "integer"
+    },
+    "contributors": {
+      "type": "component",
+      "repeatable": true,
+      "component": "event.contributor"
+    },
+    "tags": {
+      "type": "component",
+      "repeatable": true,
+      "component": "generic.tag"
+    }
+  }
+}

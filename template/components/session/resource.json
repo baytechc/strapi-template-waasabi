@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_session_resources",
+  "info": {
+    "name": "resource",
+    "icon": "file-archive",
+    "description": "Links and uploaded files that supplement a session."
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "link",
+        "file"
+      ],
+      "default": "link"
+    },
+    "title": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "attachment": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "files",
+        "images",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "public": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  }
+}

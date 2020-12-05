@@ -1,0 +1,12 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/",
+      "handler": "event-manager.index",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sessions",
+  "info": {
+    "name": "Session",
+    "description": "All sorts of sessions - presentations, panel discussions, audiovisual performances."
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "pitch": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "abstract": {
+      "type": "richtext"
+    },
+    "payment_pointer": {
+      "type": "string"
+    },
+    "resources": {
+      "type": "component",
+      "repeatable": true,
+      "component": "session.resource"
+    }
+  }
+}

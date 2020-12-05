@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_generic_tags",
+  "info": {
+    "name": "tag",
+    "icon": "tags",
+    "description": "Application defined tags (key-value string pairs) that can be attached to any model."
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    }
+  }
+}

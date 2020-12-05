@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "livestreams",
+  "info": {
+    "name": "Livestream",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "session": {
+      "model": "session"
+    },
+    "studio_link": {
+      "type": "string"
+    },
+    "rtmp_link": {
+      "type": "string"
+    },
+    "stream_id": {
+      "type": "string"
+    }
+  }
+}

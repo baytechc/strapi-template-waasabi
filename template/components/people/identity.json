@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_people_identities",
+  "info": {
+    "name": "Identity",
+    "icon": "at",
+    "description": "Various identities the person holds on other services, such as social media or a personal website."
+  },
+  "options": {},
+  "attributes": {
+    "service": {
+      "type": "enumeration",
+      "enum": [
+        "website",
+        "twitter",
+        "linkedin",
+        "github",
+        "gitlab",
+        "matrix",
+        "telegram",
+        "discord",
+        "behance",
+        "medium",
+        "mastodon"
+      ],
+      "required": true
+    },
+    "value": {
+      "type": "string",
+      "required": true
+    },
+    "public": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    }
+  }
+}

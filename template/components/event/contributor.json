@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_event_contributors",
+  "info": {
+    "name": "contributor",
+    "icon": "user-friends",
+    "description": "People involved with an event or session. Role can be any application-defined string, it is to be interpreted by the frontend."
+  },
+  "options": {},
+  "attributes": {
+    "person": {
+      "model": "people"
+    },
+    "role": {
+      "type": "string"
+    }
+  }
+}

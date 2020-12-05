@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "events",
+  "info": {
+    "name": "Event",
+    "description": "Individual sessions can be grouped into an event with an explicit schedule. Events can also have sub-events."
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "start": {
+      "type": "datetime",
+      "required": false
+    },
+    "parent": {
+      "model": "event"
+    },
+    "group": {
+      "type": "string"
+    },
+    "contributors": {
+      "type": "component",
+      "repeatable": true,
+      "component": "event.contributor"
+    },
+    "schedule": {
+      "type": "component",
+      "repeatable": true,
+      "component": "event.schedule"
+    }
+  }
+}
