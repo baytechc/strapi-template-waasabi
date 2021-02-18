@@ -7,6 +7,14 @@
       "config": {
         "policies": []
       }
+    },
+    {
+      "method": "POST",
+      "path": "/webhooks",
+      "handler": "webhooks.index",
+      "config": {
+        "policies": []
+      }
     }
   ]
 }
