@@ -1,6 +1,6 @@
 {
   "kind": "collectionType",
-  "collectionName": "signals",
+  "collectionName": "event-manager_signal",
   "info": {
     "name": "Signal",
     "description": "State updates sent to the clients"

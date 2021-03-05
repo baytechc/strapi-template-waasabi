@@ -3,7 +3,7 @@
 module.exports = {
   lifecycles: {
     async afterCreate(r) {
-      console.log(`[push|attendees] ${r.event}`);
+      console.log(`[signal] ${r.event}`);
       return r;
     },
   },

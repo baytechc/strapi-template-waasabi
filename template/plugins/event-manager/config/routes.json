@@ -31,6 +31,22 @@
       "config": {
         "policies": []
       }
+    },
+    {
+      "method": "GET",
+      "path": "/client/livestream",
+      "handler": "client.livestream",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/client/replays",
+      "handler": "client.replays",
+      "config": {
+        "policies": []
+      }
     }
   ]
 }

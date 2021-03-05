@@ -71,6 +71,13 @@ async function processMuxWebhook(h) {
       console.log(`[integrations|mux] Live stream started: ${stream_id}`);
 
       const session = await findSessionForStream(stream_id);
+
+      // Unknown session
+      if (!session) {
+        console.log(`Session not found for livestream ${stream_id}!`);
+        break;
+      }
+
       const message = `The session "${session.title}" is now live!`;
 
       signal({
@@ -92,6 +99,13 @@ async function processMuxWebhook(h) {
       console.log(`[integrations|mux] Live stream has ended: ${stream_id}`);
 
       const session = await findSessionForStream(stream_id);
+
+      // Unknown session
+      if (!session) {
+        console.log(`Session not found for livestream ${stream_id}!`);
+        break;
+      }
+
       const message = `The session "${session.title}" livestream has ended!`;
 
       signal({
@@ -115,6 +129,13 @@ async function processMuxWebhook(h) {
       console.log(`[integrations|mux] Video asset from #${stream_id} now ready: ${length}s`);
 
       const session = await findSessionForStream(stream_id);
+
+      // Unknown session
+      if (!session) {
+        console.log(`Session not found for livestream ${stream_id}!`);
+        break;
+      }
+
       const message = `The session "${session.title}" is now available for Replay!`;
 
       signal({
@@ -140,7 +161,7 @@ async function signal(message) {
 
   console.log('[integrations|mux] PUSH '+event);
 
-  return await strapi.services['signal'].create(
+  return await strapi.plugins['event-manager'].services['signal'].create(
     { event, message }
   );
 }
