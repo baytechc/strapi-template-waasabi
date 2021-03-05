@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "signals",
+  "info": {
+    "name": "Signal",
+    "description": "State updates sent to the clients"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "event": {
+      "type": "string"
+    },
+    "message": {
+      "type": "json"
+    }
+  }
+}

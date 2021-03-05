@@ -49,16 +49,10 @@ module.exports = {
         console.error(new Date().toISOString() + ' Failed to process Mux webhook: ', e);
       }
 
-      // Add contents to inbound-webhooks
-//      await strapi.query('inbound-webhooks').create({
-//        source: 'mux.'+body.type,
-//        contents: webhookData
-//      });
-
     } catch (err) {
       // On error, return the error message
       console.error(err);
-      return;
+      return err;
     }
   }
 
@@ -79,7 +73,8 @@ async function processMuxWebhook(h) {
       const session = await findSessionForStream(stream_id);
       const message = `The session "${session.title}" is now live!`;
 
-      pushMessage('stream', {
+      signal({
+        type: 'livestream',
         event: 'live-now',
         message,
         data: {
@@ -99,8 +94,9 @@ async function processMuxWebhook(h) {
       const session = await findSessionForStream(stream_id);
       const message = `The session "${session.title}" livestream has ended!`;
 
-      pushMessage('stream', {
-        event: 'livestream-ended',
+      signal({
+        type: 'livestream',
+        event: 'ended',
         message,
         data: {
           stream_id,
@@ -121,8 +117,9 @@ async function processMuxWebhook(h) {
       const session = await findSessionForStream(stream_id);
       const message = `The session "${session.title}" is now available for Replay!`;
 
-      pushMessage('stream', {
-        event: 'now-on-replay',
+      signal({
+        type: 'livestream',
+        event: 'replay-available',
         message,
         data: {
           asset_id,
@@ -138,13 +135,13 @@ async function processMuxWebhook(h) {
   }
 }
 
-async function pushMessage(type, message) {
-  console.log('[integrations|mux] PUSH '+message.message);
+async function signal(message) {
+  const event = [message.type, message.event].join('.');
 
-  // TODO: PUBLISH to non-attendees too
+  console.log('[integrations|mux] PUSH '+event);
 
-  return await strapi.services['attendee-push'].create(
-    { type, message, event: message.event }
+  return await strapi.services['signal'].create(
+    { event, message }
   );
 }
 

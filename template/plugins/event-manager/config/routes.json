@@ -15,6 +15,22 @@
       "config": {
         "policies": []
       }
+    },
+    {
+      "method": "GET",
+      "path": "/signals",
+      "handler": "signal.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/signals",
+      "handler": "signal.create",
+      "config": {
+        "policies": []
+      }
     }
   ]
 }

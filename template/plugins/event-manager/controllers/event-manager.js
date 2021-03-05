@@ -15,6 +15,7 @@ module.exports = {
    * @return {Object}
    */
 
+  // TODO: this doesn't do anything?
   index: async (ctx) => {
     // Add your own logic here.
 
