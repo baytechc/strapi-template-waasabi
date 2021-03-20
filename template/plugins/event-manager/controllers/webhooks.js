@@ -84,11 +84,11 @@ async function processMuxWebhook(h) {
         type: 'livestream',
         event: 'live-now',
         message,
-        data: {
+        livestream: {
           stream_id,
           playback_id,
-          session
-        }
+        },
+        session,
       });
     }
     return;
@@ -112,10 +112,10 @@ async function processMuxWebhook(h) {
         type: 'livestream',
         event: 'ended',
         message,
-        data: {
+        livestream: {
           stream_id,
-          session
-        }
+        },
+        session,
       });
     }
     return;
@@ -142,13 +142,13 @@ async function processMuxWebhook(h) {
         type: 'livestream',
         event: 'replay-available',
         message,
-        data: {
+        livestream: {
           asset_id,
           length,
           stream_id,
           playback_id,
-          session
-        }
+        },
+        session,
       });
     }
     return;
@@ -156,13 +156,13 @@ async function processMuxWebhook(h) {
   }
 }
 
-async function signal(message) {
-  const event = [message.type, message.event].join('.');
+async function signal(data) {
+  const event = [data.type, data.event].join('.');
 
   console.log('[integrations|mux] PUSH '+event);
 
   return await strapi.plugins['event-manager'].services['signal'].create(
-    { event, message }
+    { event, data }
   );
 }
 

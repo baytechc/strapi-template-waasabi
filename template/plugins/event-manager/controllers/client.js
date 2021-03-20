@@ -12,15 +12,21 @@ module.exports = {
       _sort: 'created_at:desc'
     });
 
-    console.log(entities);
-
     return entities.map(
       entity => sanitizeEntity(entity, { model: strapi.plugins['event-manager'].models['signal'] })
     );
   },
 
   async replays(ctx) {
-    return ctx.send(200);
+    let entities = await strapi.plugins['event-manager'].services['signal'].find({
+      event_in: [ 'livestream.replay-available' ],
+      _limit: 100,
+      _sort: 'created_at:desc'
+    });
+
+    return entities.map(
+      entity => sanitizeEntity(entity, { model: strapi.plugins['event-manager'].models['signal'] })
+    ).map(e => Object.assign({ date: e.created_at }, e.data));
   },
 
 };

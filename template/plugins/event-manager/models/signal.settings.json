@@ -14,7 +14,7 @@
     "event": {
       "type": "string"
     },
-    "message": {
+    "data": {
       "type": "json"
     }
   }
