@@ -8,6 +8,16 @@
         "policies": []
       }
     },
+
+
+    {
+      "method": "GET",
+      "path": "/webhooks",
+      "handler": "webhooks.index",
+      "config": {
+        "policies": []
+      }
+    },
     {
       "method": "POST",
       "path": "/webhooks",
@@ -16,6 +26,18 @@
         "policies": []
       }
     },
+
+    
+    {
+      "method": "POST",
+      "path": "/integrations",
+      "handler": "integrations.index",
+      "config": {
+        "policies": []
+      }
+    },
+
+  
     {
       "method": "GET",
       "path": "/signals",
@@ -32,6 +54,8 @@
         "policies": []
       }
     },
+
+
     {
       "method": "GET",
       "path": "/client/livestream",
@@ -48,5 +72,6 @@
         "policies": []
       }
     }
+
   ]
 }

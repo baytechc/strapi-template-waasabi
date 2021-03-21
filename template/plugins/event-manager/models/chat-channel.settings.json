@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "event-manager_chat-channels",
+  "info": {
+    "name": "Chat channel",
+    "description": "Chat channels connected to this Waasabi instance"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": false,
+      "unique": false
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "matrix"
+      ]
+    },
+    "channel_id": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "alias": {
+      "type": "string"
+    },
+    "topic": {
+      "type": "string"
+    },
+    "group": {
+      "type": "string"
+    },
+    "access": {
+      "type": "string",
+      "default": "*"
+    },
+    "auto_invite": {
+      "type": "string"
+    }
+  }
+}

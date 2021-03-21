@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "event-manager_chat-messages",
+  "info": {
+    "name": "Chat message",
+    "description": "Incoming messages collected by the different chat integration plugins"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": [ "ts", "ts" ],
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "received_by": {
+      "type": "string"
+    },
+    "channel_id": {
+      "type": "string"
+    },
+    "channel_name": {
+      "type": "string"
+    },
+    "channel_details": {
+      "type": "json"
+    },
+    "sender": {
+      "type": "string"
+    },
+    "sender_details": {
+      "type": "json"
+    },
+    "message": {
+      "type": "text"
+    },
+    "message_details": {
+      "type": "json"
+    }
+  }
+}
