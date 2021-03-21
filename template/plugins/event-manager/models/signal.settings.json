@@ -1,13 +1,13 @@
 {
   "kind": "collectionType",
-  "collectionName": "event-manager_signal",
+  "collectionName": "event-manager_signals",
   "info": {
     "name": "Signal",
     "description": "State updates sent to the clients"
   },
   "options": {
     "increments": true,
-    "timestamps": true,
+    "timestamps": [ "ts", "ts" ],
     "draftAndPublish": false
   },
   "attributes": {
