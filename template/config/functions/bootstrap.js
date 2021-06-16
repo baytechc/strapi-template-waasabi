@@ -1,17 +1,5 @@
 'use strict';
 
-/*
-const fs = require("fs");
-const path = require("path");
-const mime = require("mime-types");
-const {
-  categories,
-  homepage,
-  writers,
-  articles,
-  global
-} = require("../../data/data.json");
-*/
 async function isFirstRun() {
   const pluginStore = strapi.store({
     environment: strapi.config.environment,
@@ -23,8 +11,8 @@ async function isFirstRun() {
   return !initHasRun;
 };
 
-/*
-async function setPublicPermissions(newPermissions) {
+
+async function setPublicPermissions(newPermissions, permissionType = 'application') {
   // Find the ID of the public role
   const publicRole = await strapi
     .query("role", "users-permissions")
@@ -34,7 +22,7 @@ async function setPublicPermissions(newPermissions) {
   const publicPermissions = await strapi
     .query("permission", "users-permissions")
     .find({
-      type: ["users-permissions", "application"],
+      type: [permissionType],
       role: publicRole.id,
     });
 
@@ -59,34 +47,23 @@ async function setPublicPermissions(newPermissions) {
     });
   await Promise.all(updatePromises);
 }
-*/
-
-
-async function importSeedData() {
-  // Allow read of application content types
-  /*
-  await setPublicPermissions({
-    global: ['find'],
-    homepage: ['find'],
-    article: ['find', 'findone'],
-    category: ['find', 'findone'],
-    writer: ['find', 'findone'],
-  });
-  */
-
-  // Create all entries
-}
 
 module.exports = async () => {
   const initialSetup = await isFirstRun();
 
   if (initialSetup) {
     try {
-      console.log('Setting up your starter...');
-      await importSeedData();
+      console.log('Setting up API permissions...');
+
+      // Set the livestream/replays endpoints and the integration webhooks public
+      await setPublicPermissions({
+        'client': ['livestream', 'replays'],
+        'webhooks': ['post'],
+      }, 'event-manager');
+
       console.log('Ready to go');
     } catch (error) {
-      console.log('Could not import seed data');
+      console.log('Could not finish database configuration!');
       console.error(error);
     }
   }
