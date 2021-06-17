@@ -58,7 +58,7 @@ module.exports = async () => {
       // Set the livestream/replays endpoints and the integration webhooks public
       await setPublicPermissions({
         'client': ['livestream', 'replays'],
-        'webhooks': ['post'],
+        'webhooks': ['receive'],
       }, 'event-manager');
 
       console.log('Ready to go');

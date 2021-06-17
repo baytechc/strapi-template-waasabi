@@ -13,7 +13,7 @@
     {
       "method": "GET",
       "path": "/webhooks",
-      "handler": "webhooks.index",
+      "handler": "webhooks.receive",
       "config": {
         "policies": []
       }
@@ -21,7 +21,7 @@
     {
       "method": "POST",
       "path": "/webhooks",
-      "handler": "webhooks.index",
+      "handler": "webhooks.receive",
       "config": {
         "policies": []
       }

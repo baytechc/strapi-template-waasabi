@@ -8,56 +8,55 @@ const webhookSecret = process.env.MUX_WEBHOOK_SECRET;
 
 module.exports = {
   // Determine incoming webhook type/source
-  async index(ctx) {
-    return strapi.plugins['event-manager'].controllers['webhooks'].post(ctx);
+  async receive(ctx) {
+    return receiveMuxWebhook(ctx);
   },
 
+  // Some services probe the endpoint before allowing webhooks to be sent
   // HEAD /_integrations/mux
-  async head(ctx) {
-    ctx.send(200);
-  },
-
-  /* POST coming from Mux.com's webhook integration */
-  // GET /_integrations/mux
-  async post(ctx) {
-    const { method, url, body } = ctx.request;
-    const rawBody = ctx.request.body[unparsed];
-
-    const webhookData = {
-      method,
-      url,
-      signature: ctx.header['mux-signature'],
-      event: body.event,
-      object: body.object,
-      data: body.data,
-    };
-
-    // Send early response
-    ctx.send(200);
-
-
-    try {
-      const validBody = Webhooks.verifyHeader(rawBody, webhookData.signature, webhookSecret);
-      if (!validBody) throw new Error('Invalid webhook signature!');
-
-      console.log(`[integrations|mux] Incoming: ${body.type}`);
-
-      try {
-        await processMuxWebhook(body);
-      }
-      catch(e) {
-        console.error(new Date().toISOString() + ' Failed to process Mux webhook: ', e);
-      }
-
-    } catch (err) {
-      // On error, return the error message
-      console.error(err);
-      return err;
-    }
-  }
+  //async head(ctx) {
+  //  ctx.send(200);
+  //},
 
 };
 
+/* POST coming from Mux.com's webhook integration */
+async function receiveMuxWebhook(ctx) {
+  const { method, url, body } = ctx.request;
+  const rawBody = ctx.request.body[unparsed];
+
+  const webhookData = {
+    method,
+    url,
+    signature: ctx.header['mux-signature'],
+    event: body.event,
+    object: body.object,
+    data: body.data,
+  };
+
+  // Send early response
+  ctx.send(200);
+
+
+  try {
+    const validBody = Webhooks.verifyHeader(rawBody, webhookData.signature, webhookSecret);
+    if (!validBody) throw new Error('Invalid webhook signature!');
+
+    console.log(`[integrations|mux] Incoming: ${body.type}`);
+
+    try {
+      await processMuxWebhook(body);
+    }
+    catch(e) {
+      console.error(new Date().toISOString() + ' Failed to process Mux webhook: ', e);
+    }
+
+  } catch (err) {
+    // On error, return the error message
+    console.error(err);
+    return err;
+  }
+}
 
 async function processMuxWebhook(h) {
   const { type } = h;
