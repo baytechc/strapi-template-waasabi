@@ -12,23 +12,23 @@ async function isFirstRun() {
 };
 
 
-async function setPublicPermissions(newPermissions, permissionType = 'application') {
+async function setRolePermissions(newPermissions, permissionType = 'application', roleType = 'public') {
   // Find the ID of the public role
-  const publicRole = await strapi
+  const role = await strapi
     .query("role", "users-permissions")
-    .findOne({ type: "public" });
+    .findOne({ type: roleType });
 
   // List all available permissions
-  const publicPermissions = await strapi
+  const permissions = await strapi
     .query("permission", "users-permissions")
     .find({
       type: [permissionType],
-      role: publicRole.id,
+      role: role.id,
     });
 
   // Update permission to match new config
   const controllersToUpdate = Object.keys(newPermissions);
-  const updatePromises = publicPermissions
+  const updatePromises = permissions
     .filter((permission) => {
       // Only update permissions included in newConfig
       if (!controllersToUpdate.includes(permission.controller)) {
@@ -55,12 +55,37 @@ module.exports = async () => {
     try {
       console.log('Setting up API permissions...');
 
-      // Set the livestream/replays endpoints and the integration webhooks public
-      await setPublicPermissions({
+      // Set the livestream/replays endpoints and the integration webhooks
+      await setRolePermissions({
         'client': ['livestream', 'replays'],
         'webhooks': ['receive'],
-      }, 'event-manager');
+      }, 'event-manager', 'public');
 
+      // Create a new role for password-protected integrations accounts
+      const roleType = "integrations";
+
+      await await strapi
+        .query("role", "users-permissions")
+        .create({
+          type: roleType,
+          name: "Integrations",
+          description: "Used by Waasabi integrations."
+        });
+
+        // We need to create the permissions for the new role
+      const role = await strapi
+        .query("role", "users-permissions")
+        .findOne({ type: roleType });
+  
+      // Create & grant permissions for accessing the integrations endpoint
+      await strapi.query("permission", "users-permissions").create({
+        type: "event-manager",
+        controller: "integrations",
+        action: "index",
+        enabled: true,
+        role,
+      })
+  
       console.log('Ready to go');
     } catch (error) {
       console.log('Could not finish database configuration!');
