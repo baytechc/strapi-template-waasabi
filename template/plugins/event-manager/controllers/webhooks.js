@@ -5,11 +5,37 @@ const unparsed = require('koa-body/unparsed');
 
 const webhookSecret = process.env.MUX_WEBHOOK_SECRET;
 
+const crypto = require('crypto');
+
+function computeSignature(payload, secret, buffer = false) {
+  return crypto
+    .createHmac('sha256', secret)
+    .update(payload, 'utf8')
+    .digest(buffer ? undefined : 'hex');
+}
+
+function verifySignature(payload, signature, secret) {
+  const sharedSig = signature instanceof Buffer ? signature : Buffer.from(signature, 'hex');
+  const payloadSig = computeSignature(payload, secret, true);
+
+  return sharedSig.byteLength === payloadSig.byteLength && crypto.timingSafeEqual(sharedSig, payloadSig);
+}
 
 module.exports = {
   // Determine incoming webhook type/source
   async receive(ctx) {
-    return receiveMuxWebhook(ctx);
+    // Mux signed webhook
+    if (ctx.header['mux-signature']) {
+      return receiveMuxWebhook(ctx);
+    }
+
+    // HMAC-SHA256-based webhook
+    if (ctx.header['hmac-sha256']) {
+      return receiveWebhook(ctx);
+    }
+
+    // None of the above? Bad Request
+    ctx.send(400);
   },
 
   // Some services probe the endpoint before allowing webhooks to be sent
@@ -17,8 +43,82 @@ module.exports = {
   //async head(ctx) {
   //  ctx.send(200);
   //},
-
 };
+
+/* POST from any HMAC-SHA256-compatible webhook integration */
+async function receiveWebhook(ctx) {
+  const payload = ctx.request.body[unparsed];
+  const signature = ctx.header['hmac-sha256'];
+  const secret = process.env.WEBHOOKS_HMAC_SECRET;
+
+  if (!secret) {
+    console.log('[webhooks] Warning! Shared Webhook signature secret is undefined!');
+  }
+
+  const verified = verifySignature(payload, signature, secret);
+
+  // Webhook signature accepted
+  if (verified) {
+    ctx.send(200);
+
+    return processWebhook(ctx)
+
+  // Webhook signature invalid
+  } else {
+    throw new Error('Invalid webhook signature!');
+  }
+}
+
+/* POST coming from Mux.com's webhook integration */
+async function processWebhook(ctx) {
+  const { body } = ctx.request;
+  const { sender, event, type, video } = body.data;
+
+  console.log(`[webhooks] Incoming: ${sender}/${event}`);
+  console.log(body);
+
+  const stream_id = video.uuid;
+  const playback_id = video.uuid;
+
+  const session = await findSessionForStream(stream_id);
+
+  // Unknown session
+  // TODO: probably we can safely ignore these with Peertube
+  if (!session) {
+    return console.log(`Session not found for livestream ${stream_id}!`);
+  }
+
+  let message;
+  if (event == 'live-now') {
+    message = `The session "${session.title}" is now live!`;
+  } else if (event == 'ended') {
+    message = `The session "${session.title}" livestream has ended!`;
+  }
+
+  console.log(`[webhooks] ${sender}/${type}.${event}`);
+  console.log(`[webhooks] ${message}`);
+
+  await signal({
+    type: 'livestream',
+    event,
+    message,
+    livestream: {
+      type: sender,
+      stream_id,
+      playback_id,
+    },
+    session,
+    video: {
+      id: video.id,
+      uuid: video.uuid,
+      url: video.url,
+      name: video.name,
+      channelId: video.channelId,
+      state: video.state,
+      updatedAt: video.updatedAt,
+    },
+  });
+}
 
 /* POST coming from Mux.com's webhook integration */
 async function receiveMuxWebhook(ctx) {
@@ -84,6 +184,7 @@ async function processMuxWebhook(h) {
         event: 'live-now',
         message,
         livestream: {
+          type: 'hls',
           stream_id,
           playback_id,
         },
@@ -112,6 +213,7 @@ async function processMuxWebhook(h) {
         event: 'ended',
         message,
         livestream: {
+          type: 'hls',
           stream_id,
         },
         session,
@@ -142,6 +244,7 @@ async function processMuxWebhook(h) {
         event: 'replay-available',
         message,
         livestream: {
+          type: 'hls',
           asset_id,
           length,
           stream_id,
@@ -158,7 +261,7 @@ async function processMuxWebhook(h) {
 async function signal(data) {
   const event = [data.type, data.event].join('.');
 
-  console.log('[integrations|mux] PUSH '+event);
+  console.log('[webhooks] SIGNAL: '+event);
 
   return await strapi.plugins['event-manager'].services['signal'].create(
     { event, data }
